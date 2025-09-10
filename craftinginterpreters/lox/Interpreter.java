@@ -192,6 +192,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       return text;
     }
 
+    if (object instanceof double[] aDoubles) {
+      return Arrays.toString(aDoubles);
+    }
+
     return object.toString();
   }
 
@@ -262,6 +266,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       case MINUS:
         checkNumberOperands(expr.operator, left, right);
         return (double)left - (double)right;
+      case LOGICAL_AND:
+        checkNumberOperands(expr.operator, left, right);
+        return calcRiverFlow((double)left, (double)right);
       case PLUS:
         if (left instanceof Double && right instanceof Double) {
           return (double)left + (double)right;
@@ -280,6 +287,25 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     // Unreachable.
     return null;
+  }
+
+  private double[] calcRiverFlow(double peak, double tail) {
+    int days = 10;
+    double[] flow = new double[days];
+
+    double sum = 0.0;
+    for (int i = 0; i < days; i++) {
+        // Gaussian-style distribution centered at peak, width = tail
+        flow[i] = Math.exp(-Math.pow(i - peak, 2) / (2.0 * tail * tail));
+        sum += flow[i];
+    }
+
+    // Normalize so sum = 1
+    for (int i = 0; i < days; i++) {
+        flow[i] /= sum;
+    }
+
+    return flow;
   }
 
   private boolean isEqual(Object a, Object b) {
