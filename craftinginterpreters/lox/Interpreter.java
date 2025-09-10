@@ -3,6 +3,7 @@ package com.craftinginterpreters.lox;
 import java.util.Arrays;
 import java.util.List;
 import com.craftinginterpreters.lox.Expr.Variable;
+import com.craftinginterpreters.lox.Lox;
 import com.craftinginterpreters.lox.Stmt.Var;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
@@ -120,6 +121,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       case MINUS:
         checkNumberOperands(expr.operator, left, right);
         return (double)left - (double)right;
+      case HASHTAG:
+        checkRiverFlowOperands(expr.operator, left, right);
+        return calcRiverFlowDistribution((double [])left, (double)right);
       case LOGICAL_AND:
         checkNumberOperands(expr.operator, left, right);
         return calcRiverFlow((double)left, (double)right);
@@ -141,6 +145,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     // Unreachable.
     return null;
+  }
+
+  private double[] calcRiverFlowDistribution(double[] baseFlow, double rainfall) {
+      double[] scaledFlow = new double[baseFlow.length];
+
+      for (int i = 0; i < baseFlow.length; i++) {
+          scaledFlow[i] = baseFlow[i] * rainfall;
+      }
+
+      return scaledFlow;
   }
 
   private double[] calcRiverFlow(double peak, double tail) {
@@ -178,5 +192,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     if (left instanceof Double && right instanceof Double) return;
     
     throw new RuntimeError(operator, "Operands must be numbers.");
+  }
+
+
+  private void checkRiverFlowOperands(Token operator, Object left, Object right) {
+    if (left instanceof double[] && right instanceof Double) return;
+    
+    throw new RuntimeError(operator, "Operands must be river flow (a^b) and number, e.g. (a^b)@c.");
   }
 }

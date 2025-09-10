@@ -97,11 +97,11 @@ class Parser {
     return expr;
   }
 
-  // term → factor ( ( "-" | "+" | "^" ) factor )* ;
+  // term → factor ( ( "-" | "+" | "^" | "#" ) factor )* ;
   private Expr term() {
     Expr expr = factor();
 
-    while (match(MINUS, PLUS, LOGICAL_AND)) {
+    while (match(MINUS, PLUS, LOGICAL_AND, HASHTAG)) {
       Token operator = previous();
       Expr right = factor();
       expr = new Expr.Binary(expr, operator, right);
