@@ -62,6 +62,8 @@ public class Scanner {
       case '+': addToken(PLUS); break;
       case ';': addToken(SEMICOLON); break;
       case '*': addToken(STAR); break;
+      case '^': addToken(LOGICAL_AND); break;
+      case '#': addToken(HASHTAG); break;
       case '!':
         addToken(match('=') ? BANG_EQUAL : BANG);
         break;
