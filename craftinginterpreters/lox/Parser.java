@@ -244,12 +244,24 @@ class Parser {
     return expr;
   }
 
-
-  // comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+  // comparison → combineFlow ( ( ">" | ">=" | "<" | "<=" ) combineFlow )* ;
   private Expr comparison() {
-    Expr expr = term();
+    Expr expr = combineFlow();
 
     while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+      Token operator = previous();
+      Expr right = combineFlow();
+      expr = new Expr.Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  // combineFlow → term ( "<<" term )* ;
+  private Expr combineFlow() {
+    Expr expr = term();
+
+    while (match(LEFT_SHIFT)) {
       Token operator = previous();
       Expr right = term();
       expr = new Expr.Binary(expr, operator, right);
@@ -258,11 +270,11 @@ class Parser {
     return expr;
   }
 
-  // term → factor ( ( "-" | "+" | "^" | "#" ) factor )* ;
+  // term → factor ( ( "-" | "+" | "#" ) factor )* ;
   private Expr term() {
     Expr expr = factor();
 
-    while (match(MINUS, PLUS, LOGICAL_AND, HASHTAG)) {
+    while (match(MINUS, PLUS, HASHTAG)) {
       Token operator = previous();
       Expr right = factor();
       expr = new Expr.Binary(expr, operator, right);
@@ -271,11 +283,11 @@ class Parser {
     return expr;
   }
 
-  // factor → unary ( ( "/" | "*" ) unary )* ;
+  // factor → unary ( ( "/" | "*" | "^" ) unary )* ;
   private Expr factor() {
     Expr expr = unary();
 
-    while (match(SLASH, STAR)) {
+    while (match(SLASH, STAR, LOGICAL_AND)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
@@ -326,7 +338,7 @@ class Parser {
     return new Expr.Call(callee, paren, arguments);
   }
 
-  // primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
+  // primary → ARRAY | NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")";
   private Expr primary() {
     if (match(FALSE)) return new Expr.Literal(false);
     if (match(TRUE)) return new Expr.Literal(true);

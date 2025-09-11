@@ -19,7 +19,7 @@ enum TokenType {
   PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
 
   // DSL - RIVERSYSTEM: Single-character tokens
-  HASHTAG, LOGICAL_AND,
+  HASHTAG, LOGICAL_AND, LEFT_SHIFT,
 
   EOF
 }
