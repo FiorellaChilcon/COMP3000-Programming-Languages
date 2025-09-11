@@ -71,7 +71,13 @@ public class Scanner {
         addToken(match('=') ? EQUAL_EQUAL : EQUAL);
         break;
       case '<':
-        addToken(match('=') ? LESS_EQUAL : LESS);
+        if (match('<')) {
+          addToken(LEFT_SHIFT);
+        } else if (match('=')) {
+          addToken(LESS_EQUAL);
+        } else {
+          addToken(LESS);
+        }
         break;
       case '>':
         addToken(match('=') ? GREATER_EQUAL : GREATER);

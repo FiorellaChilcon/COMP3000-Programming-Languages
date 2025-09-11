@@ -7,6 +7,8 @@ import com.craftinginterpreters.lox.Lox;
 import com.craftinginterpreters.lox.Stmt.Var;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+  private final double[] rainfall = {11.4, 0.0, 0.4, 0.0, 0.0, 2.0, 0.2, 0.2, 0.2, 0.0};
+
   @Override
   public Object visitVariableExpr(Variable expr) {
     return expr.accept(this);
@@ -121,12 +123,15 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       case MINUS:
         checkNumberOperands(expr.operator, left, right);
         return (double)left - (double)right;
+      case LEFT_SHIFT:
+        checkLeftShiftOperands(expr.operator, left, right);
+        return sumScaledBaseDistributions((double [])left, (double [])right);
       case HASHTAG:
-        checkRiverFlowOperands(expr.operator, left, right);
-        return calcRiverFlowDistribution((double [])left, (double)right);
+        checkHashTagOperands(expr.operator, left, right);
+        return calcScaledBaseDistribution((double [])left, (double)right);
       case LOGICAL_AND:
         checkNumberOperands(expr.operator, left, right);
-        return calcRiverFlow((double)left, (double)right);
+        return calcBaseDistribution((double)left, (double)right);
       case PLUS:
         if (left instanceof Double && right instanceof Double) {
           return (double)left + (double)right;
@@ -147,17 +152,27 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     return null;
   }
 
-  private double[] calcRiverFlowDistribution(double[] baseFlow, double rainfall) {
+  private double[] sumScaledBaseDistributions(double[] baseFlowA, double[] baseFlowB) {
+    double[] dailyFlow = new double[baseFlowA.length];
+
+    for (int i = 0; i < baseFlowA.length; i++) {
+      dailyFlow[i] = baseFlowA[i] + baseFlowB[i];
+    }
+
+    return dailyFlow;
+  }
+
+  private double[] calcScaledBaseDistribution(double[] baseFlow, double rainunit) {
       double[] scaledFlow = new double[baseFlow.length];
 
       for (int i = 0; i < baseFlow.length; i++) {
-          scaledFlow[i] = baseFlow[i] * rainfall;
+          scaledFlow[i] = baseFlow[i] * rainunit * rainfall[i];
       }
 
       return scaledFlow;
   }
 
-  private double[] calcRiverFlow(double peak, double tail) {
+  private double[] calcBaseDistribution(double peak, double tail) {
     int days = 10;
     double[] flow = new double[days];
 
@@ -195,9 +210,18 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
 
-  private void checkRiverFlowOperands(Token operator, Object left, Object right) {
+  private void checkHashTagOperands(Token operator, Object left, Object right) {
     if (left instanceof double[] && right instanceof Double) return;
     
-    throw new RuntimeError(operator, "Operands must be river flow (a^b) and number, e.g. (a^b)@c.");
+    throw new RuntimeError(operator, "Operands must be a river flow (a^b) and a number, e.g. (a^b)@c.");
+  }
+
+  private void checkLeftShiftOperands(Token operator, Object left, Object right) {
+    if (left instanceof double[] leftArr && right instanceof double[] rightArr) {
+      if (leftArr.length == rightArr.length) return;
+      throw new RuntimeError(operator, "River flow distributions must have the same length.");
+    }
+
+    throw new RuntimeError(operator, "Operands must be river flows (double[]), e.g. (a^b) << (c^d).");
   }
 }
