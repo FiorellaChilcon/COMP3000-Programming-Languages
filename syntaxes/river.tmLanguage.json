@@ -1,0 +1,21 @@
+{
+  "scopeName": "source.river",
+  "patterns": [
+    {
+      "name": "comment.line.double-slash.river",
+      "match": "//.*$"
+    },
+    {
+      "name": "keyword.operator.river",
+      "match": "\\^|#|<<"
+    },
+    {
+      "name": "support.function.river",
+      "match": "\\bprint\\b"
+    },
+    {
+      "name": "constant.numeric.river",
+      "match": "\\b\\d+\\b"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "river-syntax",
+  "displayName": "River DSL Syntax Highlighting",
+  "description": "Highlights operators for my River DSL",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "river",
+        "aliases": ["River"],
+        "extensions": [".river"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "river",
+        "scopeName": "source.river",
+        "path": "./syntaxes/river.tmLanguage.json"
+      }
+    ]
+  }
+}
