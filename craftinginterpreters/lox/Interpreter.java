@@ -1,10 +1,9 @@
 package com.craftinginterpreters.lox;
 
+import com.craftinginterpreters.lox.Expr.Variable;
+import com.craftinginterpreters.lox.Stmt.Var;
 import java.util.Arrays;
 import java.util.List;
-import com.craftinginterpreters.lox.Expr.Variable;
-import com.craftinginterpreters.lox.Lox;
-import com.craftinginterpreters.lox.Stmt.Var;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   private final double[] rainfall = {11.4, 0.0, 0.4, 0.0, 0.0, 2.0, 0.2, 0.2, 0.2, 0.0};
@@ -156,7 +155,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     double[] dailyFlow = new double[baseFlowA.length];
 
     for (int i = 0; i < baseFlowA.length; i++) {
-      dailyFlow[i] = baseFlowA[i] + baseFlowB[i];
+      dailyFlow[i] = Math.round((baseFlowA[i] + baseFlowB[i]) * 100.0) / 100.0;
     }
 
     return dailyFlow;
@@ -166,7 +165,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       double[] scaledFlow = new double[baseFlow.length];
 
       for (int i = 0; i < baseFlow.length; i++) {
-          scaledFlow[i] = baseFlow[i] * rainunit * rainfall[i];
+        scaledFlow[i] = baseFlow[i] * rainunit * rainfall[i];
+        scaledFlow[i] = Math.round(scaledFlow[i] * 100.0) / 100.0;
       }
 
       return scaledFlow;
@@ -178,14 +178,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     double sum = 0.0;
     for (int i = 0; i < days; i++) {
-        // Gaussian-style distribution centered at peak, width = tail
-        flow[i] = Math.exp(-Math.pow(i - peak, 2) / (2.0 * tail * tail));
-        sum += flow[i];
+      // Gaussian-style distribution centered at peak, width = tail
+      flow[i] = Math.exp(-Math.pow(i - peak, 2) / (2.0 * tail * tail));
+      sum += flow[i];
     }
 
-    // Normalize so sum = 1
     for (int i = 0; i < days; i++) {
-        flow[i] /= sum;
+      flow[i] = Math.round((flow[i] / sum) * 100.0) / 100.0;
     }
 
     return flow;
