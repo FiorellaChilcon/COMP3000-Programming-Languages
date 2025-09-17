@@ -71,10 +71,36 @@ Output: [3.28, 0.0, 1.0, 0.0, ...]
 ## Instructions to Compile
 
 1. Compile the source code:
-  ```
+  ```bash
   javac ./craftinginterpreters/*/*.java -d bin
   ```
 2. Run the interpreter:
-  ```
+  ```bash
   java -cp bin com.craftinginterpreters.lox.Lox
   ```
+
+### Using `Makefile` (recommended)
+
+1. **Compile all source files**:
+
+```bash
+make
+```
+
+2. **Run the interpreter** (without a file):
+
+```bash
+make runLox
+```
+
+3. **Run the interpreter with a `.lox` source file**:
+
+```bash
+make runLox FILE=./test.lox
+```
+
+3. **Clean compiled files**:
+
+```bash
+make clean
+```
