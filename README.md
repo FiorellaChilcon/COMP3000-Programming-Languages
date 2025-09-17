@@ -93,10 +93,10 @@ make
 make runLox
 ```
 
-3. **Run the interpreter with a `.lox` source file**:
+3. **Run the interpreter with a `.river` source file**:
 
 ```bash
-make runLox FILE=./test.lox
+make runLox FILE=./test.river
 ```
 
 3. **Clean compiled files**:
