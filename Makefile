@@ -22,5 +22,9 @@ else
 	java -cp $(BIN_DIR) $(MAIN_CLASS) $(FILE)
 endif
 
+generateAst: 
+	javac $(SRC_DIR)/craftinginterpreters/tool/GenerateAst.java -d $(BIN_DIR)
+	java -cp $(BIN_DIR) com.craftinginterpreters.tool.GenerateAst ./
+
 clean:
 	rm -rf $(BIN_DIR)

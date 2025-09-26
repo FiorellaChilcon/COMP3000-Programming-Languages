@@ -17,3 +17,13 @@ var c = "global c";
 print a;
 print b;
 print c;
+
+
+var a1 = 0;
+var temp;
+
+for (var b1 = 1; a1 < 10000; b1 = temp + b1) {
+  print a1;
+  temp = a1;
+  a1 = b1;
+}
