@@ -103,4 +103,34 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<Void> {
     new AstPrinter().print(expression);
     // Expected: (* (- 123) (group 45.67))
   }
+
+    @Override
+    public String visitCallExpr(Expr.Call expr) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Void visitFunctionStmt(Stmt.Function stmt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
