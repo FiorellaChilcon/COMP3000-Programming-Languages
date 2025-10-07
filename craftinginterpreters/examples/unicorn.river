@@ -1,1 +1,4 @@
-print (3^8)#9 << (1^7)#8;
+var root_river = (1^7)#8;
+var unicorn_river_flow = (3^8)#9;
+var unicorn_river = unicorn_river_flow << root_river;
+print unicorn_river;

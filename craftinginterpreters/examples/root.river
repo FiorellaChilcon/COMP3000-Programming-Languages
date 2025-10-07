@@ -1,1 +1,2 @@
-print (1^7)#8;
+var root_river = (1^7)#8;
+print root_river;
