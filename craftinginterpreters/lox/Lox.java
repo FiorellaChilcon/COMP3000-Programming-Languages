@@ -65,8 +65,8 @@ public class Lox {
     // System.out.println(new AstPrinter().print(expression));
     interpreter.interpret(statements);
     System.out.println();
-    System.out.println("AST PRINTER OUTPUT:");
-    new AstPrinter().print(statements);
+    // System.out.println("AST PRINTER OUTPUT:");
+    // new AstPrinter().print(statements);
   }
 
   static void error(int line, String message) {

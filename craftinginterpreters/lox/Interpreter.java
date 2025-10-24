@@ -10,7 +10,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   final Environment globals = new Environment();
   private Environment environment = globals;
   private final Map<Expr, Integer> locals = new HashMap<>();
-  private final double[] rainfall = {11.4, 0.0, 0.4, 0.0, 0.0, 2.0, 0.2, 0.2, 0.2, 0.0};
+  private final double[] rainfall = {11.4, 0.0, 0.4, 13.1, 8.0, 6.0, 2.2, 0.2, 0.2, 0.0};
 
   Interpreter() {
     globals.define("clock", new LoxCallable() {
@@ -18,9 +18,102 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       public int arity() { return 0; }
 
       @Override
-      public Object call(Interpreter interpreter,
-                        List<Object> arguments) {
+      public Object call(Interpreter interpreter, List<Object> arguments) {
         return (double)System.currentTimeMillis() / 1000.0;
+      }
+
+      @Override
+      public String toString() { return "<native fn>"; }
+    });
+
+    globals.define("calcDamFlowOutWithThreshold", new LoxCallable() {
+      @Override
+      public int arity() { 
+        return 2; // threshold and flowIn
+      }
+
+      /**
+       * Calculates dam outflow based on a flow threshold
+       * @flowIn double[10], represents the inflow to the dam for 10 days
+       * @threshold double, represents the flow threshold used in the calculation
+       * @return double[], representing the outflow from the dam over 10 days
+       */
+      @Override
+      public Object call(Interpreter interpreter, List<Object> arguments) {
+        double[] flowIn = (double[]) arguments.get(0);
+        double threshold = (double) arguments.get(1);
+        double[] flowOut = new double[flowIn.length];
+
+        for (int day = 0; day < flowIn.length; day++) {
+          if (flowIn[day] > threshold) {
+            flowOut[day] = flowIn[day] * 0.75; // release 75% if above threshold
+          } else {
+            flowOut[day] = flowIn[day]; // release full flow
+          }
+        }
+
+        return flowOut;
+      }
+
+      @Override
+      public String toString() { return "<native fn>"; }
+    });
+
+    globals.define("calcDamFlowOutBasedOnRainfall", new LoxCallable() {
+
+      @Override
+      public int arity() { 
+        return 1; // flowIn
+      }
+
+    /**
+     * Calculates dam outflow based on fixed rainfall data
+     * @flowIn double[10], represents the inflow to the dam for 10 days
+     * @return double[10], representing the outflow from the dam over 10 days
+     */
+      @Override
+      public Object call(Interpreter interpreter, List<Object> arguments) {
+        final double RAIN_THRESHOLD = 10.0; // mm
+        double[] flowIn = (double[]) arguments.get(0);
+        double[] flowOut = new double[flowIn.length];
+
+        for (int day = 0; day < flowIn.length; day++) {
+          if (rainfall[day] > RAIN_THRESHOLD) {
+            flowOut[day] = flowIn[day] * 0.75; // release 75% if above rain threshold
+          } else {
+            flowOut[day] = flowIn[day]; // release full flow
+          }
+        }
+
+        return flowOut;
+      }
+
+      @Override
+      public String toString() { return "<native fn>"; }
+    });
+
+    globals.define("calcDamFlowBlockHalf", new LoxCallable() {
+
+      @Override
+      public int arity() { 
+        return 1; // flowIn
+      }
+
+    /**
+     * Calculates dam outflow by halving the inflow
+     * @flowIn double[10], represents the inflow to the dam for 10 days
+     * @return double[10], representing the outflow from the dam over 10 days
+     */
+      @Override
+      public Object call(Interpreter interpreter, List<Object> arguments) {
+        double[] flowIn = (double[]) arguments.get(0);
+        double[] flowOut = new double[flowIn.length];
+
+        for (int day = 0; day < flowIn.length; day++) {
+          flowOut[day] = flowIn[day] / 2.0; // block half the flow
+        }
+
+        return flowOut;
       }
 
       @Override

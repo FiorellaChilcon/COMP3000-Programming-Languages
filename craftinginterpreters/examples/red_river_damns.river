@@ -1,0 +1,23 @@
+// Googong dam blocks exactly half the water that flows into it.
+// Googong dam blocks exactly half the water that flows into it unless the rain that day was greater than 10mm.
+// Googong dam blocks half the water that flows into it unless the flow into it is greater than 10L/s, in which case it blocks 75
+
+
+var red_river_flow = (1^3)#6; // red river flow over 10 days
+var thresh_calc_dam = calcDamFlowOutWithThreshold(red_river_flow, 10); // dam that blocks based on threshold (10 L/s)
+var rain_calc_dam = calcDamFlowOutBasedOnRainfall(red_river_flow); // dam that blocks based on rainfall
+var half_calc_dam = calcDamFlowBlockHalf(red_river_flow); // dam that blocks half the flow
+
+print("🔴 Red river flow over 10 days:");
+print red_river_flow;
+
+print("Dam outflow calculations: 🌊");
+
+print("✅ Dam outflow based on threshold (10 L/s):");
+print thresh_calc_dam;
+
+print("✅ Dam outflow based on rainfall (>10mm):");
+print rain_calc_dam;
+
+print("✅ Dam outflow blocking half the flow:");
+print half_calc_dam;
