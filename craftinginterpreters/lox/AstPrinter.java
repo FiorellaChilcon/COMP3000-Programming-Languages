@@ -106,31 +106,46 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<Void> {
 
     @Override
     public String visitCallExpr(Expr.Call expr) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      return "(call " + expr.callee.accept(this) + ")";
     }
 
     @Override
     public String visitLogicalExpr(Expr.Logical expr) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      return parenthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      System.out.println("(fun " + stmt.name.lexeme + ")");
+      print(stmt.body);
+      return null;
     }
 
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      System.out.println("(if " + stmt.condition.accept(this) + ")");
+      stmt.thenBranch.accept(this);
+      if (stmt.elseBranch != null) {
+        System.out.println("(else)");
+        stmt.elseBranch.accept(this);
+      }
+      return null;
     }
 
     @Override
     public Void visitReturnStmt(Stmt.Return stmt) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      if (stmt.value != null) {
+        System.out.println(parenthesize("return", stmt.value));
+      } else {
+        System.out.println("(return)");
+      }
+      return null;
     }
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
-        throw new UnsupportedOperationException("Not supported yet.");
+      System.out.println("(while " + stmt.condition.accept(this) + ")");
+      stmt.body.accept(this);
+      return null;
     }
 }
